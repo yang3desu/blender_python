@@ -111,11 +111,8 @@ noiseInline.period = 1
 # --------------------------------------------------
 # ■初期設定
 
-# コンポジットノードを有効にする
-bpy.context.scene.use_nodes = True
-
-# ノードツリー内のノードたちを取得してnodesに入れる
-node_tree = bpy.context.scene.node_tree
+node_tree = bpy.data.node_groups.new(name="COMP", type="CompositorNodeTree")
+bpy.context.scene.compositing_node_group = node_tree
 nodes = node_tree.nodes
 
 # 一旦クリア
@@ -131,19 +128,18 @@ inNode.location = (0, 0)
 
 # 追加　出力→ファイル出力
 outNode = nodes.new(type='CompositorNodeOutputFile')
-outNode.base_path = "//cmp/"
-outNode.file_slots.clear() # 最初からあるソケットは一旦クリア
-outNode.file_slots.new("line_sobel")
-outNode.file_slots.new("line_freestyle")
+outNode.directory = "//cmp/"
+outNode.file_name = "line_sobel"
+# outNode.file_name("line_freestyle")
 outNode.location = (400, -300)
 
 # 追加　フィルター→フィルター
 soNode = nodes.new(type='CompositorNodeFilter')
-soNode.filter_type = 'SOBEL'
+soNode.inputs[2].default_value = 'Sobel'
 soNode.location = (300, 0)
 
 # 追加　コンバーター→カラーランプ
-coNode = nodes.new(type='CompositorNodeValToRGB')
+coNode = nodes.new(type='ShaderNodeValToRGB')
 coNode.color_ramp.elements[0].color = (1, 1, 1, 0)
 coNode.color_ramp.elements[0].position = 0.45
 coNode.color_ramp.elements[1].color = (0, 0, 0, 1)
@@ -158,10 +154,11 @@ links = node_tree.links
 # リンク　レンダーレイヤの画像ー→ソーベル→カラーランプ→ファイル出力
 links.new(inNode.outputs[0], soNode.inputs[1])
 links.new(soNode.outputs[0], coNode.inputs[0])
+
 links.new(coNode.outputs[0], outNode.inputs[0])
 
 # リンク　レンダーレイヤーのFreestyle→ファイル出力
-links.new(inNode.outputs[2], outNode.inputs[1])
+# links.new(inNode.outputs[2], outNode.inputs[1])
 
 
 
