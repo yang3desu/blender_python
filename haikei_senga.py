@@ -111,7 +111,9 @@ noiseInline.period = 1
 # --------------------------------------------------
 # ■初期設定
 
-node_tree = bpy.data.node_groups.new(name="COMP", type="CompositorNodeTree")
+tree = bpy.data.node_groups
+
+node_tree = tree.new(name="COMP", type="CompositorNodeTree")
 bpy.context.scene.compositing_node_group = node_tree
 nodes = node_tree.nodes
 
@@ -155,11 +157,15 @@ links = node_tree.links
 links.new(inNode.outputs[0], soNode.inputs[1])
 links.new(soNode.outputs[0], coNode.inputs[0])
 
-links.new(coNode.outputs[0], outNode.inputs[0])
+outNode.name = 'images_exporter'
+
+next_index = len(outNode.outputs)
+outNode.file_output_items.new('RGBA', 'Color')
+links.new(coNode.outputs[0], outNode.inputs[next_index])
+
 
 # リンク　レンダーレイヤーのFreestyle→ファイル出力
 # links.new(inNode.outputs[2], outNode.inputs[1])
-
 
 
 
