@@ -132,8 +132,16 @@ inNode.location = (0, 0)
 outNode = nodes.new(type='CompositorNodeOutputFile')
 outNode.directory = "//cmp/"
 outNode.file_name = "line_sobel"
-# outNode.file_name("line_freestyle")
+outNode.format.media_type = 'IMAGE'
 outNode.location = (400, -300)
+
+# 追加　出力→ファイル出力
+out2Node = nodes.new(type='CompositorNodeOutputFile')
+out2Node.directory = "//cmp/"
+out2Node.file_name = "line_freestyle"
+out2Node.format.media_type = 'IMAGE'
+out2Node.location = (200, -300)
+
 
 # 追加　フィルター→フィルター
 soNode = nodes.new(type='CompositorNodeFilter')
@@ -154,18 +162,18 @@ coNode.location = (500, 0)
 links = node_tree.links
 
 # リンク　レンダーレイヤの画像ー→ソーベル→カラーランプ→ファイル出力
-links.new(inNode.outputs[0], soNode.inputs[1])
+links.new(inNode.outputs[0], soNode.inputs[0])
 links.new(soNode.outputs[0], coNode.inputs[0])
-
-outNode.name = 'images_exporter'
 
 next_index = len(outNode.outputs)
 outNode.file_output_items.new('RGBA', 'Color')
 links.new(coNode.outputs[0], outNode.inputs[next_index])
 
+# レンダーレイヤのfleestyle
+next_index = len(out2Node.outputs)
+out2Node.file_output_items.new('RGBA', 'Color')
+links.new(inNode.outputs[2], out2Node.inputs[next_index])
 
-# リンク　レンダーレイヤーのFreestyle→ファイル出力
-# links.new(inNode.outputs[2], outNode.inputs[1])
 
 
 
