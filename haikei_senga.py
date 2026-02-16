@@ -130,17 +130,10 @@ inNode.location = (0, 0)
 
 # 追加　出力→ファイル出力
 outNode = nodes.new(type='CompositorNodeOutputFile')
-outNode.directory = "/Users/yang/Desktop/"
+outNode.directory = "//cmp/"
 outNode.file_name = "line_sobel"
 # outNode.file_name("line_freestyle")
 outNode.location = (400, -300)
-
-# 追加　出力→ファイル出力
-out2Node = nodes.new(type='CompositorNodeOutputFile')
-out2Node.directory = "/Users/yang/Desktop/"
-out2Node.file_name = "line_freestyle"
-out2Node.location = (200, -300)
-
 
 # 追加　フィルター→フィルター
 soNode = nodes.new(type='CompositorNodeFilter')
@@ -161,7 +154,7 @@ coNode.location = (500, 0)
 links = node_tree.links
 
 # リンク　レンダーレイヤの画像ー→ソーベル→カラーランプ→ファイル出力
-links.new(inNode.outputs[0], soNode.inputs[0])
+links.new(inNode.outputs[0], soNode.inputs[1])
 links.new(soNode.outputs[0], coNode.inputs[0])
 
 outNode.name = 'images_exporter'
@@ -171,10 +164,8 @@ outNode.file_output_items.new('RGBA', 'Color')
 links.new(coNode.outputs[0], outNode.inputs[next_index])
 
 
-next_index = len(out2Node.outputs)
-out2Node.file_output_items.new('RGBA', 'Color')
-links.new(inNode.outputs[2], out2Node.inputs[next_index])
-
+# リンク　レンダーレイヤーのFreestyle→ファイル出力
+# links.new(inNode.outputs[2], outNode.inputs[1])
 
 
 
