@@ -1,6 +1,20 @@
 # 漫画背景線画抽出用スクリプト
 # --------------------------------------------------
-# クラスとか関数にまとめてしまうとn年後にいじろうとしたときにわけわからないので、ベタ書き繰り返し上等です。マルチカーソルを使って手直ししてください。
+
+# Blender5.0以前のVerでは動きません。
+
+# 設定値をいじったりノードを全消ししたりします。
+# 新規ファイルにオブジェクトを配置、カメラをセット、アス比などを設定、名前をつけて保存してから実行してください。
+
+# Scriptタブでこのコードを呼び出し or エディタにコードを貼り付け、実行。
+# 画像レンダリングを実行すると、.blendファイルと同階層にフォルダを作成し、2つファイルを作成します。
+# 書き出し画像は透明背景に、黒のラインアートです。
+
+# 微調整は、compositeタブのNode、もしくはFleestyleの設定値を変更して再度レンダリング。
+
+# --------------------------------------------------
+# (自分宛て)コードの美しさより、n年後にすべて忘却した自分がメンテすることを優先しています。書き出し先ディレクトリパスなどは冒頭に設定をまとめるのではなく、処理を実行する行にそのままベタ書きしてください。マニュアルやFAQサイトをそのまま貼り付ける為。
+# --------------------------------------------------
 
 
 
@@ -118,8 +132,7 @@ bpy.context.scene.compositing_node_group = node_tree
 nodes = node_tree.nodes
 
 # 一旦クリア
-for n in nodes:
-    nodes.remove(n)
+nodes.clear()
 
 # --------------------------------------------------
 # ■ノードを追加していく
@@ -169,7 +182,7 @@ next_index = len(outNode.outputs)
 outNode.file_output_items.new('RGBA', 'Color')
 links.new(coNode.outputs[0], outNode.inputs[next_index])
 
-# レンダーレイヤのfleestyle
+# レンダーレイヤのfleestyle→ファイル出力
 next_index = len(out2Node.outputs)
 out2Node.file_output_items.new('RGBA', 'Color')
 links.new(inNode.outputs[2], out2Node.inputs[next_index])
